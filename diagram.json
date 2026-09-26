@@ -2,7 +2,38 @@
   "version": 1,
   "author": "team",
   "editor": "wokwi",
-  "parts": [],
-  "connections": [],
+  "parts": [
+    {
+      "type": "wokwi-breadboard",
+      "id": "bb1",
+      "top": -3,
+      "left": 310,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-arduino-uno",
+      "id": "uno",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": -36,
+      "left": 385.8,
+      "attrs": { "volume": "0.1" }
+    }
+  ],
+  "connections": [
+    ["uno:GND.2", "bb1:bn.1", "black", ["v19.7", "h185.7"]],
+    ["uno:5V", "bb1:bp.2", "red", ["v29.3", "h204.8"]],
+    ["bb1:bn.50", "bb1:tn.50", "black", ["v0"]],
+    ["bb1:bp.50", "bb1:tp.50", "red", ["v0"]],
+    ["bz1:1", "bb1:9t.a", "", ["$bb"]],
+    ["bz1:2", "bb1:10t.a", "", ["$bb"]],
+    ["bb1:tn.1", "bb1:9t.c", "black", ["v0"]],
+    ["uno:3", "bb1:10t.d", "red", ["v-18.6", "h61", "v86.4"]]
+  ],
   "dependencies": {}
 }
