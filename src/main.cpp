@@ -4,12 +4,12 @@
 #include "Led.hpp"
 
 // Zona de intervalos
-AsyncInterval buzzerInterval(2000); // Cada 2000 milisegundos (2 segundos) alternará el estado del buzzer
-AsyncInterval ledInterval(1000); // Cada 1000 milisegundos (1 segundo) alternará el estado del LED
+AsyncInterval buzzerInterval(2000); // Cada 2000 milisegundos alternará el estado del buzzer
+AsyncInterval ledInterval(1000); // Cada 1000 milisegundos alternará el estado del LED
 
 // Zona de estados
 bool estadoBuzzer = false;
-bool estadoLed = false;
+int distancia = 4; // Variable de distancia (4: Lejos, 3: Moderado, 2: Cerca, 1: Muy cerca)
 
 void setup()
 {
@@ -21,6 +21,9 @@ void setup()
 
     // Inicializar el LED
     inicializarLed();
+
+    // Establecer el estado inicial del Led según la distancia
+    establecerDistancia(distancia);
 }
 
 void loop()
@@ -36,14 +39,26 @@ void loop()
         Serial.println(estadoBuzzer ? "Encendido" : "Apagado");
     }
 
-    // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del LED
+    // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del Led
     if (ledInterval.ready())
     {
-        // Alternar el estado del LED
-        alternarLed(estadoLed);
+        // Reiniciar la distancia para alternar los colores del Led
+        distancia--;
+        if (distancia < 1)
+        {
+            distancia = 4;
+        }
 
-        // Imprimir el estado actual del LED en el puerto serie
-        Serial.print("Estado del LED: ");
-        Serial.println(estadoLed ? "Encendido" : "Apagado");
+        // Establecer el color del Led según la distancia
+        establecerDistancia(distancia);
+
+        // Imprimir el nivel de distancia y su color correspondiente
+        Serial.print("Distancia: ");
+        Serial.print(distancia);
+        Serial.print(" -> ");
+        if (distancia == 4) Serial.println("Lejos (Verde)");
+        else if (distancia == 3) Serial.println("Moderado (Amarillo)");
+        else if (distancia == 2) Serial.println("Cerca (Azul)");
+        else if (distancia == 1) Serial.println("Muy cerca (Rojo)");
     }
 }
