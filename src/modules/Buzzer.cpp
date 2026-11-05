@@ -1,7 +1,7 @@
 #include "Buzzer.hpp"
 #include <Arduino.h>
 
-#define BUZZER_PIN 3
+#define BUZZER_PIN 2
 
 void inicializarBuzzer()
 {

@@ -23,17 +23,34 @@
       "top": 50.4,
       "left": 347.4,
       "attrs": { "volume": "0.1" }
+    },
+    {
+      "type": "wokwi-rgb-led",
+      "id": "rgb1",
+      "top": 71.4,
+      "left": 415.4,
+      "attrs": { "common": "cathode" }
     }
   ],
   "connections": [
     ["uno:GND.2", "bb1:bn.1", "black", ["v10.1", "h176.9"]],
     ["uno:5V", "bb1:bp.2", "red", ["v10.1", "h196"]],
     ["bb1:bn.4", "bb1:6b.j", "black", ["v0"]],
+    ["led1:A", "bb1:10b.h", "blue", ["v0"]],
+    ["led1:C", "bb1:9b.h", "black", ["v0"]],
+    ["bb1:bp.50", "bb1:tp.50", "red", ["v0"]],
+    ["bb1:12b.j", "bb1:bn.9", "black", ["v0"]],
+    ["bb1:bn.50", "bb1:tn.50", "black", ["v0"]],
     ["bz1:1", "bb1:6b.h", "", ["$bb"]],
     ["bz1:2", "bb1:7b.h", "", ["$bb"]],
-    ["uno:3", "bb1:7b.i", "red", ["v-18.6", "h51.4", "v153.6"]],
-    ["bb1:bp.50", "bb1:tp.50", "red", ["v0"]],
-    ["bb1:bn.50", "bb1:tn.50", "black", ["v0"]]
+    ["rgb1:R", "bb1:11b.f", "", ["$bb"]],
+    ["rgb1:COM", "bb1:12b.g", "", ["$bb"]],
+    ["rgb1:G", "bb1:13b.f", "", ["$bb"]],
+    ["rgb1:B", "bb1:14b.f", "", ["$bb"]],
+    ["uno:2", "bb1:7b.i", "magenta", ["v-18.6", "h61.1", "v153.6"]],
+    ["uno:3", "bb1:11b.i", "red", ["v-18.6", "h70.6", "v153.6", "h-19.2"]],
+    ["uno:5", "bb1:13b.i", "green", ["v-18.6", "h89.6", "v9.6"]],
+    ["uno:6", "bb1:14b.i", "blue", ["v-18.6", "h99.1", "v9.6"]]
   ],
   "dependencies": {}
 }
