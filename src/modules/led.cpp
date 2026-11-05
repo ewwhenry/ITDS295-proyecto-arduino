@@ -2,9 +2,9 @@
 #include <Arduino.h>
 
 // Definimos los pines físicos del arduino donde se conectan los canales del Led RGB
-#define LED_Green 4
-#define LED_Blue  5
-#define LED_Red   6
+#define LED_Green 5
+#define LED_Blue 6
+#define LED_Red 3
 
 void inicializarLed()
 {
@@ -57,24 +57,24 @@ void establecerDistancia(int distancia)
 
     switch (distancia)
     {
-        case 4: // color verde si esta lejos
-            digitalWrite(LED_Green, HIGH);
-            break;
-            
-        case 3: // color amarillo si esta moderado
-            digitalWrite(LED_Red, HIGH);
-            digitalWrite(LED_Green, HIGH);
-            break;
-            
-        case 2: // color azul si esta cerca
-            digitalWrite(LED_Blue, HIGH);
-            break;
-            
-        case 1: // color rojo si esta muy cerca
-            digitalWrite(LED_Red, HIGH);
-            break;
-            
-        default:
-            break;
+    case 4: // color verde si esta lejos
+        digitalWrite(LED_Green, HIGH);
+        break;
+
+    case 3: // color amarillo si esta moderado
+        digitalWrite(LED_Red, HIGH);
+        digitalWrite(LED_Green, HIGH);
+        break;
+
+    case 2: // color azul si esta cerca
+        digitalWrite(LED_Blue, HIGH);
+        break;
+
+    case 1: // color rojo si esta muy cerca
+        digitalWrite(LED_Red, HIGH);
+        break;
+
+    default:
+        break;
     }
 }
