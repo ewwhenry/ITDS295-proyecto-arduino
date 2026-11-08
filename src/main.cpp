@@ -2,6 +2,7 @@
 #include "AsyncInterval.hpp"
 #include "Buzzer.hpp"
 #include "Led.hpp"
+#include "pantalla.hpp"
 
 // Zona de intervalos
 AsyncInterval buzzerInterval(2000); // Cada 2000 milisegundos alternará el estado del buzzer
@@ -24,6 +25,12 @@ void setup()
 
     // Establecer el estado inicial del Led según la distancia
     establecerDistancia(distancia);
+
+    // Inicializar la pantalla LCD I2C
+    inicializarPantalla();
+
+    // Mostrar el estado inicial en la pantalla LCD
+    mostrarEstadoSistema(distancia);
 }
 
 void loop()
@@ -60,5 +67,8 @@ void loop()
         else if (distancia == 3) Serial.println("Moderado (Amarillo)");
         else if (distancia == 2) Serial.println("Cerca (Azul)");
         else if (distancia == 1) Serial.println("Muy cerca (Rojo)");
+
+        // Actualizar la pantalla LCD con el nuevo nivel de distancia
+        mostrarEstadoSistema(distancia);
     }
 }

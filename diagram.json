@@ -30,6 +30,15 @@
       "top": 71.4,
       "left": 415.4,
       "attrs": {"common": "cathode"}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "ptl1",
+      "top": -150,
+      "left": 460,
+      "attrs": {
+        "pins": "i2c"
+      }
     }
   ],
   "connections": [
@@ -46,7 +55,11 @@
     ["uno:6", "bb1:11b.i", "red", ["v-18.6", "h70.4", "v120.6"]],
     ["bb1:bp.50", "bb1:tp.50", "red", ["v0"]],
     ["bb1:12b.j", "bb1:bn.9", "black", ["v0"]],
-    ["bb1:bn.50", "bb1:tn.50", "black", ["v0"]]
+    ["bb1:bn.50", "bb1:tn.50", "black", ["v0"]],
+    ["ptl1:GND", "bb1:bn.11", "black", ["v0"]],
+    ["ptl1:VCC", "bb1:bp.10", "red", ["v0"]],
+    ["ptl1:SDA", "uno:A4", "green", ["v305", "h-150"]],
+    ["ptl1:SCL", "uno:A5", "yellow", ["v310", "h-160"]]
   ],
   "dependencies": {}
 }
