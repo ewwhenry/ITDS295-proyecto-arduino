@@ -30,7 +30,7 @@ void apagarLed();
  * @brief Alterna el estado del LED entre encendido y apagado.
  *
  * Si el LED está apagado, lo enciende; si está encendido, lo apaga.
- * 
+ *
  * @param estadoLed Referencia al estado actual del LED (true si está encendido, false si está apagado).
  */
 void alternarLed(bool &estadoLed);
@@ -41,3 +41,12 @@ void alternarLed(bool &estadoLed);
  * @param distancia Nivel de distancia (4: Lejos/Verde, 3: Moderado/Amarillo, 2: Cerca/Azul, 1: Muy cerca/Rojo).
  */
 void establecerDistancia(int distancia);
+
+struct RGB
+{
+    int r;
+    int g;
+    int b;
+};
+
+RGB getColor(float distance);

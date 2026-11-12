@@ -51,30 +51,40 @@ void alternarLed(bool &estadoLed) // funcion para alternar el estado del led, qu
 void establecerDistancia(int distancia)
 {
     // Primero apagamos todos los canales para evitar mezclas de colores
-    digitalWrite(LED_Red, LOW);
-    digitalWrite(LED_Green, LOW);
-    digitalWrite(LED_Blue, LOW);
+    analogWrite(LED_Red, 0);
+    analogWrite(LED_Green, 0);
+    analogWrite(LED_Blue, 0);
 
-    switch (distancia)
+    RGB color = getColor(distancia);
+    analogWrite(LED_Red, color.r);
+    analogWrite(LED_Green, color.g);
+    analogWrite(LED_Blue, color.b);
+}
+
+RGB getColor(float distance)
+{
+    distance = constrain(distance, 0.0, 100.0);
+
+    RGB color;
+
+    // Transición rojo -> amarillo
+    if (distance <= 50.0)
     {
-    case 4: // color verde si esta lejos
-        digitalWrite(LED_Green, HIGH);
-        break;
+        float t = distance / 50.0;
 
-    case 3: // color amarillo si esta moderado
-        digitalWrite(LED_Red, HIGH);
-        digitalWrite(LED_Green, HIGH);
-        break;
-
-    case 2: // color azul si esta cerca
-        digitalWrite(LED_Blue, HIGH);
-        break;
-
-    case 1: // color rojo si esta muy cerca
-        digitalWrite(LED_Red, HIGH);
-        break;
-
-    default:
-        break;
+        color.r = 255;
+        color.g = 255 * t;
+        color.b = 0;
     }
+    // Transición amarillo -> verde
+    else
+    {
+        float t = (distance - 50.0) / 50.0;
+
+        color.r = 255 * (1.0 - t);
+        color.g = 255;
+        color.b = 0;
+    }
+
+    return color;
 }

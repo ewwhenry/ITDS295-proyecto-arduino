@@ -3,14 +3,17 @@
 #include "Buzzer.hpp"
 #include "Led.hpp"
 #include "pantalla.hpp"
+#include "HCSR04.hpp"
 
 // Zona de intervalos
-AsyncInterval buzzerInterval(2000); // Cada 2000 milisegundos alternará el estado del buzzer
-AsyncInterval ledInterval(1000); // Cada 1000 milisegundos alternará el estado del LED
+AsyncInterval buzzerInterval(1000);  // Cada 2000 milisegundos alternará el estado del buzzer
+AsyncInterval ledInterval(10);       // Cada 1000 milisegundos alternará el estado del LED
+AsyncInterval distanciaInterval(10); // Cada 10 milisegundos medirá la distancia con el sensor HCSR04
 
 // Zona de estados
 bool estadoBuzzer = false;
-int distancia = 4; // Variable de distancia (4: Lejos, 3: Moderado, 2: Cerca, 1: Muy cerca)
+int distancia = 4;     // Variable de distancia (4: Lejos, 3: Moderado, 2: Cerca, 1: Muy cerca)
+float rawDistance = 0; // Variable para almacenar la distancia medida por el sensor HCSR04
 
 void setup()
 {
@@ -31,6 +34,9 @@ void setup()
 
     // Mostrar el estado inicial en la pantalla LCD
     mostrarEstadoSistema(distancia);
+
+    // Inicializar el sensor de distancia HCSR04
+    inicializarHCSR04();
 }
 
 void loop()
@@ -46,29 +52,35 @@ void loop()
         Serial.println(estadoBuzzer ? "Encendido" : "Apagado");
     }
 
+    if (distanciaInterval.ready())
+    {
+        rawDistance = medirDistanciaHCSR04();
+        distancia = (rawDistance / 400) * 100;
+
+        if (distancia > 75)
+        {
+            buzzerInterval.setInterval(750);
+        }
+        else if (distancia > 50)
+        {
+            buzzerInterval.setInterval(500);
+        }
+        else if (distancia > 25)
+        {
+            buzzerInterval.setInterval(250);
+        }
+        else
+        {
+            buzzerInterval.setInterval(50);
+        }
+    }
+
     // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del Led
     if (ledInterval.ready())
     {
-        // Reiniciar la distancia para alternar los colores del Led
-        distancia--;
-        if (distancia < 1)
-        {
-            distancia = 4;
-        }
-
         // Establecer el color del Led según la distancia
         establecerDistancia(distancia);
-
-        // Imprimir el nivel de distancia y su color correspondiente
-        Serial.print("Distancia: ");
-        Serial.print(distancia);
-        Serial.print(" -> ");
-        if (distancia == 4) Serial.println("Lejos (Verde)");
-        else if (distancia == 3) Serial.println("Moderado (Amarillo)");
-        else if (distancia == 2) Serial.println("Cerca (Azul)");
-        else if (distancia == 1) Serial.println("Muy cerca (Rojo)");
-
         // Actualizar la pantalla LCD con el nuevo nivel de distancia
-        mostrarEstadoSistema(distancia);
+        mostrarEstadoSistema(rawDistance);
     }
 }

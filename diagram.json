@@ -36,9 +36,14 @@
       "id": "ptl1",
       "top": -150,
       "left": 460,
-      "attrs": {
-        "pins": "i2c"
-      }
+      "attrs": { "pins": "i2c" }
+    },
+    {
+      "type": "wokwi-hc-sr04",
+      "id": "hc",
+      "top": 20.7,
+      "left": 475.9,
+      "attrs": { "pins": "i2c" }
     }
   ],
   "connections": [
@@ -50,20 +55,28 @@
     ["bb1:bp.50", "bb1:tp.50", "red", ["v0"]],
     ["bb1:12b.j", "bb1:bn.9", "black", ["v0"]],
     ["bb1:bn.50", "bb1:tn.50", "black", ["v0"]],
+    ["uno:2", "bb1:7b.i", "magenta", ["v-9", "h70.7", "v134.4", "h76.8"]],
+    ["uno:3", "bb1:11b.i", "red", ["v-18.6", "h70.6", "v153.6", "h-19.2"]],
+    ["uno:5", "bb1:13b.i", "green", ["v-28.2", "h70.4", "v172.8", "h163.2"]],
+    ["uno:6", "bb1:14b.i", "blue", ["v-37.8", "h89.5", "v192", "h163.2"]],
+    ["ptl1:GND", "bb1:bn.11", "black", ["h-12.8", "v311.3"]],
+    ["ptl1:VCC", "bb1:bp.10", "red", ["h-12.8", "v291.8"]],
+    ["ptl1:SDA", "uno:A4", "green", ["h-12.8", "v319.8", "h-205.2"]],
+    ["ptl1:SCL", "uno:A5", "yellow", ["h-12.8", "v300.7", "h-195.7"]],
+    ["bb1:bp.19", "bb1:24b.j", "red", ["v0"]],
+    ["bb1:bn.21", "bb1:27b.j", "black", ["v0"]],
+    ["uno:8", "bb1:26b.j", "violet", ["v231", "h393.4", "v-9.6"]],
+    ["bb1:25b.j", "uno:7", "orange", ["v76.8", "h-374.4"]],
     ["bz1:1", "bb1:6b.h", "", ["$bb"]],
     ["bz1:2", "bb1:7b.h", "", ["$bb"]],
     ["rgb1:R", "bb1:11b.f", "", ["$bb"]],
     ["rgb1:COM", "bb1:12b.g", "", ["$bb"]],
     ["rgb1:G", "bb1:13b.f", "", ["$bb"]],
     ["rgb1:B", "bb1:14b.f", "", ["$bb"]],
-    ["uno:2", "bb1:7b.i", "magenta", ["v-18.6", "h61.1", "v153.6"]],
-    ["uno:3", "bb1:11b.i", "red", ["v-18.6", "h70.6", "v153.6", "h-19.2"]],
-    ["uno:5", "bb1:13b.i", "green", ["v-18.6", "h89.6", "v9.6"]],
-    ["uno:6", "bb1:14b.i", "blue", ["v-18.6", "h99.1", "v9.6"]],
-    ["ptl1:GND", "bb1:bn.11", "black", ["v0"]],
-    ["ptl1:VCC", "bb1:bp.10", "red", ["v0"]],
-    ["ptl1:SDA", "uno:A4", "green", ["v305", "h-150"]],
-    ["ptl1:SCL", "uno:A5", "yellow", ["v310", "h-160"]]
+    ["hc:VCC", "bb1:24b.f", "", ["$bb"]],
+    ["hc:TRIG", "bb1:25b.f", "", ["$bb"]],
+    ["hc:ECHO", "bb1:26b.f", "", ["$bb"]],
+    ["hc:GND", "bb1:27b.f", "", ["$bb"]]
   ],
   "dependencies": {}
 }

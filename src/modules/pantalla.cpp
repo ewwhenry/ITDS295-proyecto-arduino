@@ -24,22 +24,20 @@ void mostrarEstadoSistema(int distancia)
 
     // Fila 1: Muestra la distancia en palabras
     lcd.setCursor(0, 1);
-    switch (distancia)
+    if (distancia >= 75)
     {
-        case 4: 
-            lcd.print("Lejos"); 
-            break;
-        case 3: 
-            lcd.print("Moderado"); 
-            break;
-        case 2: 
-            lcd.print("Cerca"); 
-            break;
-        case 1: 
-            lcd.print("Muy cerca"); 
-            break;
-        default: 
-            lcd.print("Desconocido"); 
-            break;
+        lcd.print("Lejos");
+    }
+    else if (distancia >= 50)
+    {
+        lcd.print("Moderado");
+    }
+    else if (distancia >= 25)
+    {
+        lcd.print("Cerca");
+    }
+    else
+    {
+        lcd.print("Muy cerca");
     }
 }
