@@ -1,43 +1,64 @@
 /**
  * @file Led.hpp
- * @brief Módulo para el control del LED del sistema.
+ * @brief Módulo para el control del LED RGB del sistema.
  *
- * Proporciona la interfaz para inicializar el hardware del LED
- * y controlar su estado de encendido, apagado o alternancia.
+ * Proporciona la interfaz para inicializar el hardware del LED, controlar su
+ * estado de encendido/apagado y establecer un color según la distancia.
  */
 
 #pragma once
 
+#include <stdint.h>
+
 /**
- * @brief Inicializa el hardware necesario para el LED.
+ * @brief Componentes de color de un LED RGB.
+ */
+struct RGB
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+};
+
+/**
+ * @brief Inicializa los pines del LED RGB.
  *
- * Configura el pin del LED como salida digital y establece
- * su estado inicial (apagado). Debe llamarse una sola vez en el setup.
+ * Configura los tres canales como salida y apaga el LED. Debe llamarse una
+ * sola vez en el setup.
  */
 void inicializarLed();
 
 /**
- * @brief Enciende el LED.
+ * @brief Enciende todos los canales del LED RGB.
  */
 void encenderLed();
 
 /**
- * @brief Apaga el LED.
+ * @brief Apaga todos los canales del LED RGB.
  */
 void apagarLed();
 
 /**
  * @brief Alterna el estado del LED entre encendido y apagado.
  *
- * Si el LED está apagado, lo enciende; si está encendido, lo apaga.
- * 
- * @param estadoLed Referencia al estado actual del LED (true si está encendido, false si está apagado).
+ * @param estadoLed Referencia al estado actual del LED (true encendido).
  */
 void alternarLed(bool &estadoLed);
 
 /**
- * @brief Establece el color y estado del LED RGB según el nivel de distancia.
+ * @brief Establece el color del LED a partir de un porcentaje de distancia.
  *
- * @param distancia Nivel de distancia (4: Lejos/Verde, 3: Moderado/Amarillo, 2: Cerca/Azul, 1: Muy cerca/Rojo).
+ * El color varía de rojo (0 %) a amarillo (50 %) y de amarillo a verde
+ * (100 %).
+ *
+ * @param porcentaje Distancia normalizada de 0 a 100.
  */
-void establecerDistancia(int distancia);
+void establecerColorPorcentaje(int porcentaje);
+
+/**
+ * @brief Calcula el color correspondiente a un porcentaje de distancia.
+ *
+ * @param porcentaje Distancia normalizada de 0 a 100.
+ * @return Componentes RGB resultantes.
+ */
+RGB obtenerColor(int porcentaje);

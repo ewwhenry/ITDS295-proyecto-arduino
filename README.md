@@ -3,6 +3,19 @@
 > Fundamentos de Electrónica – 1º semestre •
 > Universidad Autónoma de Occidente, Culiacán
 
+Sistema de detección de proximidad con Arduino UNO. Mide la distancia con un
+sensor HC-SR04 y responde con un LED RGB, un buzzer y una pantalla LCD I2C.
+
+## Documentación
+
+La documentación técnica está disponible en [`docs/`](docs/README.md):
+
+- [Arquitectura](docs/arquitectura.md)
+- [Hardware y conexiones](docs/hardware.md)
+- [Flujo del sistema](docs/flujo.md)
+- [Compilación y ejecución](docs/compilacion.md)
+- [Módulos](docs/modules/AsyncInterval.md)
+
 ## Repartición de versiones
 
 - Integrante 1 — V1
@@ -23,6 +36,19 @@ Para desarrollar comodamente y contribuir sin conflictos en la arquitectura del 
   - [`Windows`](https://git-scm.com/install/windows)
   - [`Linux`](https://git-scm.com/install/linux)
   - [`macOS`](https://git-scm.com/install/mac)
+
+## Compilación rápida
+
+Con PlatformIO instalado, desde la raíz del proyecto:
+
+```
+pio run
+pio run -t upload
+pio device monitor
+```
+
+Para simular el circuito, abre el proyecto en VS Code y ejecuta el comando
+`Wokwi: Start Simulator`. El monitor serie usa `9600` baudios.
 
 ## Flujo de trabajo (IMPORTANTE)
 
@@ -179,19 +205,18 @@ Sentar las bases del diagrama (`diagram.json`) y crear un punto de partida en el
 - **Crear función para apagar el led**. De igual manera, permitir indicar a que pin enviar la señal de apagado.
 - **Actualizar el código anterior para usar las nuevas funciones**. Ésto para mantener un código ordenado y un desarrollo más limpio.
 
-### V3 — Integrante 3
+### V3 — Pantalla LCD I2C
 
 Parte de V2 y agrega:
 
-> Por definir
+- Pantalla LCD 1602 con interfaz I2C para mostrar distancia y nivel.
+- LED RGB cuyo color varía según la distancia.
+- Buzzer cuya intermitencia se acelera a medida que el obstáculo se acerca.
 
-### V4 — Integrante 4
+### V4 — Sensor ultrasónico y versión final
 
-Versión final:
-
-> Por definir
-
-- [ ] Documentación
-- [ ] Pruebas finales
-
-## Hola Yosgart
+- Sensor ultrasónico HC-SR04 para medir la distancia.
+- Clasificación de distancia en niveles (`MuyCerca`, `Cerca`, `Moderado`, `Lejos`).
+- Refactorización del código y configuración centralizada en `Config.hpp`.
+- Documentación técnica en `docs/`.
+- [ ] Pruebas finales en hardware y simulación.

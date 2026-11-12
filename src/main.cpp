@@ -1,74 +1,77 @@
 #include <Arduino.h>
+
 #include "AsyncInterval.hpp"
 #include "Buzzer.hpp"
+#include "Config.hpp"
+#include "Distancia.hpp"
+#include "HCSR04.hpp"
 #include "Led.hpp"
-#include "pantalla.hpp"
+#include "Pantalla.hpp"
 
-// Zona de intervalos
-AsyncInterval buzzerInterval(2000); // Cada 2000 milisegundos alternará el estado del buzzer
-AsyncInterval ledInterval(1000); // Cada 1000 milisegundos alternará el estado del LED
+namespace
+{
+// Temporizadores no bloqueantes
+AsyncInterval medicionInterval(config::INTERVALO_MEDICION_MS);
+AsyncInterval pantallaInterval(config::INTERVALO_PANTALLA_MS);
+AsyncInterval buzzerInterval(config::INTERVALO_BUZZER_INICIAL_MS);
 
-// Zona de estados
+// Estado del sistema
 bool estadoBuzzer = false;
-int distancia = 4; // Variable de distancia (4: Lejos, 3: Moderado, 2: Cerca, 1: Muy cerca)
+float distanciaCm = 0.0f;
+int porcentajeDistancia = 0;
+NivelDistancia nivelDistancia = NivelDistancia::MuyCerca;
+} // namespace
 
 void setup()
 {
-    // "Inicializar" el puerto serie para depuración
-    Serial.begin(9600);
+    Serial.begin(config::BAUDIOS_SERIAL);
 
-    // Inicializar el buzzer
     inicializarBuzzer();
-
-    // Inicializar el LED
     inicializarLed();
-
-    // Establecer el estado inicial del Led según la distancia
-    establecerDistancia(distancia);
-
-    // Inicializar la pantalla LCD I2C
+    inicializarHCSR04();
     inicializarPantalla();
 
-    // Mostrar el estado inicial en la pantalla LCD
-    mostrarEstadoSistema(distancia);
+    distanciaCm = medirDistanciaHCSR04();
+    if (distanciaCm < 0.0f)
+    {
+        distanciaCm = config::DISTANCIA_MAXIMA_CM;
+    }
+
+    porcentajeDistancia = porcentajeDesdeDistancia(distanciaCm);
+    nivelDistancia = nivelDesdePorcentaje(porcentajeDistancia);
+    buzzerInterval.setInterval(intervaloBuzzer(nivelDistancia));
+
+    establecerColorPorcentaje(porcentajeDistancia);
+    mostrarEstadoSistema(distanciaCm, nivelDistancia);
 }
 
 void loop()
 {
-    // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del buzzer
+    if (medicionInterval.ready())
+    {
+        distanciaCm = medirDistanciaHCSR04();
+        if (distanciaCm < 0.0f)
+        {
+            distanciaCm = config::DISTANCIA_MAXIMA_CM;
+        }
+
+        porcentajeDistancia = porcentajeDesdeDistancia(distanciaCm);
+        nivelDistancia = nivelDesdePorcentaje(porcentajeDistancia);
+        buzzerInterval.setInterval(intervaloBuzzer(nivelDistancia));
+
+        establecerColorPorcentaje(porcentajeDistancia);
+    }
+
     if (buzzerInterval.ready())
     {
-        // Alternar el estado del buzzer
-        alternarBuzzer(estadoBuzzer);
+        alternarBuzzer(estadoBuzzer, config::FRECUENCIA_BUZZER_HZ);
 
-        // Imprimir el estado actual del buzzer en el puerto serie
         Serial.print("Estado del buzzer: ");
         Serial.println(estadoBuzzer ? "Encendido" : "Apagado");
     }
 
-    // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del Led
-    if (ledInterval.ready())
+    if (pantallaInterval.ready())
     {
-        // Reiniciar la distancia para alternar los colores del Led
-        distancia--;
-        if (distancia < 1)
-        {
-            distancia = 4;
-        }
-
-        // Establecer el color del Led según la distancia
-        establecerDistancia(distancia);
-
-        // Imprimir el nivel de distancia y su color correspondiente
-        Serial.print("Distancia: ");
-        Serial.print(distancia);
-        Serial.print(" -> ");
-        if (distancia == 4) Serial.println("Lejos (Verde)");
-        else if (distancia == 3) Serial.println("Moderado (Amarillo)");
-        else if (distancia == 2) Serial.println("Cerca (Azul)");
-        else if (distancia == 1) Serial.println("Muy cerca (Rojo)");
-
-        // Actualizar la pantalla LCD con el nuevo nivel de distancia
-        mostrarEstadoSistema(distancia);
+        mostrarEstadoSistema(distanciaCm, nivelDistancia);
     }
 }

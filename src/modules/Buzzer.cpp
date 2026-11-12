@@ -1,21 +1,23 @@
 #include "Buzzer.hpp"
-#include <Arduino.h>
 
-#define BUZZER_PIN 2
+#include "Config.hpp"
+#include <Arduino.h>
 
 void inicializarBuzzer()
 {
-    pinMode(BUZZER_PIN, OUTPUT);
+    pinMode(config::PIN_BUZZER, OUTPUT);
+    desactivarBuzzer();
 }
 
 void activarBuzzer(int frecuenciaHz)
 {
-    tone(BUZZER_PIN, frecuenciaHz);
+    tone(config::PIN_BUZZER, frecuenciaHz);
 }
 
 void desactivarBuzzer()
 {
-    noTone(BUZZER_PIN);
+    noTone(config::PIN_BUZZER);
+    digitalWrite(config::PIN_BUZZER, LOW);
 }
 
 void alternarBuzzer(bool &estadoBuzzer, int frecuenciaHz)
@@ -24,10 +26,9 @@ void alternarBuzzer(bool &estadoBuzzer, int frecuenciaHz)
     {
         desactivarBuzzer();
         estadoBuzzer = false;
+        return;
     }
-    else
-    {
-        activarBuzzer(frecuenciaHz);
-        estadoBuzzer = true;
-    }
+
+    activarBuzzer(frecuenciaHz);
+    estadoBuzzer = true;
 }
