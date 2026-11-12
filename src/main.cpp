@@ -1,86 +1,77 @@
 #include <Arduino.h>
+
 #include "AsyncInterval.hpp"
 #include "Buzzer.hpp"
-#include "Led.hpp"
-#include "pantalla.hpp"
+#include "Config.hpp"
+#include "Distancia.hpp"
 #include "HCSR04.hpp"
+#include "Led.hpp"
+#include "Pantalla.hpp"
 
-// Zona de intervalos
-AsyncInterval buzzerInterval(1000);  // Cada 2000 milisegundos alternará el estado del buzzer
-AsyncInterval ledInterval(10);       // Cada 1000 milisegundos alternará el estado del LED
-AsyncInterval distanciaInterval(10); // Cada 10 milisegundos medirá la distancia con el sensor HCSR04
+namespace
+{
+// Temporizadores no bloqueantes
+AsyncInterval medicionInterval(config::INTERVALO_MEDICION_MS);
+AsyncInterval pantallaInterval(config::INTERVALO_PANTALLA_MS);
+AsyncInterval buzzerInterval(config::INTERVALO_BUZZER_INICIAL_MS);
 
-// Zona de estados
+// Estado del sistema
 bool estadoBuzzer = false;
-int distancia = 4;     // Variable de distancia (4: Lejos, 3: Moderado, 2: Cerca, 1: Muy cerca)
-float rawDistance = 0; // Variable para almacenar la distancia medida por el sensor HCSR04
+float distanciaCm = 0.0f;
+int porcentajeDistancia = 0;
+NivelDistancia nivelDistancia = NivelDistancia::MuyCerca;
+} // namespace
 
 void setup()
 {
-    // "Inicializar" el puerto serie para depuración
-    Serial.begin(9600);
+    Serial.begin(config::BAUDIOS_SERIAL);
 
-    // Inicializar el buzzer
     inicializarBuzzer();
-
-    // Inicializar el LED
     inicializarLed();
-
-    // Establecer el estado inicial del Led según la distancia
-    establecerDistancia(distancia);
-
-    // Inicializar la pantalla LCD I2C
+    inicializarHCSR04();
     inicializarPantalla();
 
-    // Mostrar el estado inicial en la pantalla LCD
-    mostrarEstadoSistema(distancia);
+    distanciaCm = medirDistanciaHCSR04();
+    if (distanciaCm < 0.0f)
+    {
+        distanciaCm = config::DISTANCIA_MAXIMA_CM;
+    }
 
-    // Inicializar el sensor de distancia HCSR04
-    inicializarHCSR04();
+    porcentajeDistancia = porcentajeDesdeDistancia(distanciaCm);
+    nivelDistancia = nivelDesdePorcentaje(porcentajeDistancia);
+    buzzerInterval.setInterval(intervaloBuzzer(nivelDistancia));
+
+    establecerColorPorcentaje(porcentajeDistancia);
+    mostrarEstadoSistema(distanciaCm, nivelDistancia);
 }
 
 void loop()
 {
-    // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del buzzer
+    if (medicionInterval.ready())
+    {
+        distanciaCm = medirDistanciaHCSR04();
+        if (distanciaCm < 0.0f)
+        {
+            distanciaCm = config::DISTANCIA_MAXIMA_CM;
+        }
+
+        porcentajeDistancia = porcentajeDesdeDistancia(distanciaCm);
+        nivelDistancia = nivelDesdePorcentaje(porcentajeDistancia);
+        buzzerInterval.setInterval(intervaloBuzzer(nivelDistancia));
+
+        establecerColorPorcentaje(porcentajeDistancia);
+    }
+
     if (buzzerInterval.ready())
     {
-        // Alternar el estado del buzzer
-        alternarBuzzer(estadoBuzzer);
+        alternarBuzzer(estadoBuzzer, config::FRECUENCIA_BUZZER_HZ);
 
-        // Imprimir el estado actual del buzzer en el puerto serie
         Serial.print("Estado del buzzer: ");
         Serial.println(estadoBuzzer ? "Encendido" : "Apagado");
     }
 
-    if (distanciaInterval.ready())
+    if (pantallaInterval.ready())
     {
-        rawDistance = medirDistanciaHCSR04();
-        distancia = (rawDistance / 400) * 100;
-
-        if (distancia > 75)
-        {
-            buzzerInterval.setInterval(750);
-        }
-        else if (distancia > 50)
-        {
-            buzzerInterval.setInterval(500);
-        }
-        else if (distancia > 25)
-        {
-            buzzerInterval.setInterval(250);
-        }
-        else
-        {
-            buzzerInterval.setInterval(50);
-        }
-    }
-
-    // Comprobar si ha pasado el intervalo de tiempo para alternar el estado del Led
-    if (ledInterval.ready())
-    {
-        // Establecer el color del Led según la distancia
-        establecerDistancia(distancia);
-        // Actualizar la pantalla LCD con el nuevo nivel de distancia
-        mostrarEstadoSistema(rawDistance);
+        mostrarEstadoSistema(distanciaCm, nivelDistancia);
     }
 }

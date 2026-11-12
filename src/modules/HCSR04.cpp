@@ -1,22 +1,29 @@
 #include "HCSR04.hpp"
-#include <Arduino.h>
 
-#define TRIGGER_PIN 7
-#define ECHO_PIN 8
+#include "Config.hpp"
+#include <Arduino.h>
 
 void inicializarHCSR04()
 {
-    pinMode(TRIGGER_PIN, OUTPUT);
-    pinMode(ECHO_PIN, INPUT);
-};
+    pinMode(config::PIN_TRIGGER, OUTPUT);
+    pinMode(config::PIN_ECHO, INPUT);
+    digitalWrite(config::PIN_TRIGGER, LOW);
+}
 
 float medirDistanciaHCSR04()
 {
-    digitalWrite(TRIGGER_PIN, HIGH);
+    digitalWrite(config::PIN_TRIGGER, LOW);
+    delayMicroseconds(2);
+    digitalWrite(config::PIN_TRIGGER, HIGH);
     delayMicroseconds(10);
-    digitalWrite(TRIGGER_PIN, LOW);
+    digitalWrite(config::PIN_TRIGGER, LOW);
 
-    long duration = pulseIn(ECHO_PIN, HIGH);
-    float distance = duration * 0.034 / 2; // Convert to centimeters
-    return distance;
+    const unsigned long duracion = pulseIn(config::PIN_ECHO, HIGH, config::TIMEOUT_ECO_US);
+
+    if (duracion == 0)
+    {
+        return -1.0f;
+    }
+
+    return (duracion * config::VELOCIDAD_SONIDO_CM_US) / 2.0f;
 }
