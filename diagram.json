@@ -44,6 +44,22 @@
       "top": 20.7,
       "left": 475.9,
       "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": 87.4,
+      "left": 695.2,
+      "rotate": 90,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn2",
+      "top": 87.4,
+      "left": 733.6,
+      "rotate": 90,
+      "attrs": { "color": "green", "xray": "1" }
     }
   ],
   "connections": [
@@ -74,7 +90,19 @@
     ["hc:VCC", "bb1:24b.f", "", ["$bb"]],
     ["hc:TRIG", "bb1:25b.f", "", ["$bb"]],
     ["hc:ECHO", "bb1:26b.f", "", ["$bb"]],
-    ["hc:GND", "bb1:27b.f", "", ["$bb"]]
+    ["hc:GND", "bb1:27b.f", "", ["$bb"]],
+    ["btn1:1.l", "bb1:42t.e", "", ["$bb"]],
+    ["btn1:2.l", "bb1:40t.e", "", ["$bb"]],
+    ["btn1:1.r", "bb1:42b.f", "", ["$bb"]],
+    ["btn1:2.r", "bb1:40b.f", "", ["$bb"]],
+    ["btn2:1.l", "bb1:46t.e", "", ["$bb"]],
+    ["btn2:2.l", "bb1:44t.e", "", ["$bb"]],
+    ["btn2:1.r", "bb1:46b.f", "", ["$bb"]],
+    ["btn2:2.r", "bb1:44b.f", "", ["$bb"]],
+    ["bb1:tn.34", "bb1:42t.a", "black", ["v0"]],
+    ["bb1:tn.37", "bb1:46t.a", "black", ["v0"]],
+    ["uno:A1", "bb1:40b.j", "green", ["v58.1", "h483.3"]],
+    ["bb1:44b.j", "uno:A0", "green", ["v105.6", "h-9.6"]]
   ],
   "dependencies": {}
 }

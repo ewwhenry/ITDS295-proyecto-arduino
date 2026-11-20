@@ -22,3 +22,6 @@ void inicializarPantalla();
  * @param nivel Nivel de distancia calculado a partir de la medición.
  */
 void mostrarEstadoSistema(float distanciaCm, NivelDistancia nivel);
+
+void encenderPantalla();
+void apagarPantalla();

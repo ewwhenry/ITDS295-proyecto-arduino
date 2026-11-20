@@ -9,14 +9,13 @@ void inicializarBuzzer()
     desactivarBuzzer();
 }
 
-void activarBuzzer(int frecuenciaHz)
+void activarBuzzer()
 {
-    tone(config::PIN_BUZZER, frecuenciaHz);
+    digitalWrite(config::PIN_BUZZER, HIGH);
 }
 
 void desactivarBuzzer()
 {
-    noTone(config::PIN_BUZZER);
     digitalWrite(config::PIN_BUZZER, LOW);
 }
 
@@ -29,6 +28,6 @@ void alternarBuzzer(bool &estadoBuzzer, int frecuenciaHz)
         return;
     }
 
-    activarBuzzer(frecuenciaHz);
+    activarBuzzer();
     estadoBuzzer = true;
 }
