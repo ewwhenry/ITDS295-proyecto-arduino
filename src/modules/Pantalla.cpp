@@ -11,24 +11,26 @@ LiquidCrystal_I2C lcd(config::LCD_DIRECCION, config::LCD_COLUMNAS, config::LCD_F
 
 namespace
 {
-void rellenarLinea(char *linea)
-{
-    size_t longitud = strlen(linea);
-
-    while (longitud < config::LCD_COLUMNAS)
+    void rellenarLinea(char *linea)
     {
-        linea[longitud++] = ' ';
+        encenderPantalla();
+
+        size_t longitud = strlen(linea);
+
+        while (longitud < config::LCD_COLUMNAS)
+        {
+            linea[longitud++] = ' ';
+        }
+
+        linea[longitud] = '\0';
     }
 
-    linea[longitud] = '\0';
-}
-
-void imprimirLinea(uint8_t fila, char *linea)
-{
-    rellenarLinea(linea);
-    lcd.setCursor(0, fila);
-    lcd.print(linea);
-}
+    void imprimirLinea(uint8_t fila, char *linea)
+    {
+        rellenarLinea(linea);
+        lcd.setCursor(0, fila);
+        lcd.print(linea);
+    }
 } // namespace
 
 void inicializarPantalla()
@@ -40,6 +42,7 @@ void inicializarPantalla()
 
 void mostrarEstadoSistema(float distanciaCm, NivelDistancia nivel)
 {
+    encenderPantalla();
     if (distanciaCm < 0.0f)
     {
         distanciaCm = config::DISTANCIA_MAXIMA_CM;
@@ -61,4 +64,15 @@ void mostrarEstadoSistema(float distanciaCm, NivelDistancia nivel)
     char lineaNivel[config::LCD_COLUMNAS + 1];
     snprintf(lineaNivel, sizeof(lineaNivel), "%s", nombreNivel(nivel));
     imprimirLinea(1, lineaNivel);
+}
+
+void encenderPantalla()
+{
+    lcd.backlight();
+}
+
+void apagarPantalla()
+{
+    lcd.clear();
+    lcd.noBacklight();
 }
